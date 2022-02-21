@@ -22,6 +22,7 @@ private:
 	size_t row_size;
 	size_t col_size;
 	FieldCell player_posititon;
+	FieldCell endgame_position;
 
 	bool check_cell_value(FieldCell& cell);
 public:
@@ -30,6 +31,9 @@ public:
 	size_t get_row_size() { return row_size; }
 	size_t get_col_size() { return col_size; }
 	const FieldCell& get_player_position() { return player_posititon; }
+	const FieldCell& get_endgame_position() { return endgame_position; }
 
 	bool set_player_position(FieldCell cell);
+	bool set_endgame_position(FieldCell cell);
+	bool is_in_endgame_state();
 };

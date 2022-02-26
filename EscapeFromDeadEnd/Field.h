@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <ostream>
 
 struct FieldCell
 {
@@ -39,4 +40,6 @@ public:
 	bool set_endgame_position(FieldCell cell);
 	bool is_endgame_state();
 	bool add_field_block(Block block);
+
+	static void print_field(std::ostream& out, const Field& field, const field_blocks_t& blocks);
 };

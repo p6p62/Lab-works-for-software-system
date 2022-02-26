@@ -74,3 +74,39 @@ bool Field::add_field_block(Block block)
 	}
 	return result;
 }
+
+void Field::print_field(std::ostream& out, const Field& field, const field_blocks_t& blocks)
+{
+	std::vector<std::vector<size_t>> temp;
+	temp.assign(field.row_size, std::vector<size_t>(field.col_size));
+
+	int n{ 1 };
+	for (auto block : blocks)
+	{
+		for (size_t i = 0; i < block.row_size; i++)
+		{
+			for (size_t j = 0; j < block.col_size; j++)
+			{
+				temp.at(block.upper_left_cell_pos.row + i).at(block.upper_left_cell_pos.col + j) = n;
+			}
+		}
+		n++;
+	}
+
+	for (auto row : temp)
+	{
+		for (auto col : row)
+		{
+			if (col == 0)
+			{
+				out << '*';
+			}
+			else
+			{
+				out << col;
+			}
+			out << ' ';
+		}
+		out << '\n';
+	}
+}

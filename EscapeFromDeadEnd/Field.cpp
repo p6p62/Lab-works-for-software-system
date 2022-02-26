@@ -1,4 +1,5 @@
 #include "Field.h"
+#include <iomanip>
 
 bool Field::check_cell_value(FieldCell& cell)
 {
@@ -93,19 +94,23 @@ void Field::print_field(std::ostream& out, const Field& field, const field_block
 		n++;
 	}
 
+	int width{ 2 };
+	while ((n /= 10) > 0)
+		width++;
+
 	for (auto row : temp)
 	{
 		for (auto col : row)
 		{
 			if (col == 0)
 			{
-				out << '*';
+				out << ' ';
 			}
 			else
 			{
 				out << col;
 			}
-			out << ' ';
+			out << std::setw(width);
 		}
 		out << '\n';
 	}

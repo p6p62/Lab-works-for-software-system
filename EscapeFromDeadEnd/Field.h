@@ -30,11 +30,11 @@ private:
 public:
 	Field(size_t rows, size_t cols) { row_size = rows; col_size = cols; }
 
-	size_t get_row_size() { return row_size; }
-	size_t get_col_size() { return col_size; }
-	const FieldCell& get_player_position() { return player_posititon; }
-	const FieldCell& get_endgame_position() { return endgame_position; }
-	const field_blocks_t& get_field_blocks() { return blocks; }
+	size_t get_row_size() const { return row_size; }
+	size_t get_col_size() const { return col_size; }
+	const FieldCell& get_player_position() const { return player_posititon; }
+	const FieldCell& get_endgame_position() const { return endgame_position; }
+	const field_blocks_t& get_field_blocks() const { return blocks; }
 
 	bool set_player_position(FieldCell cell);
 	bool set_endgame_position(FieldCell cell);

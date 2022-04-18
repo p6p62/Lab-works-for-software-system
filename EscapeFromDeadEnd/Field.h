@@ -4,14 +4,14 @@
 
 struct FieldCell
 {
-	size_t row;
-	size_t col;
+	size_t row = 0;
+	size_t col = 0;
 };
 
 struct Block
 {
-	size_t row_size;
-	size_t col_size;
+	size_t row_size = 1;
+	size_t col_size = 1;
 	FieldCell upper_left_cell_pos;
 };
 
@@ -22,7 +22,7 @@ class Field
 private:
 	size_t row_size;
 	size_t col_size;
-	FieldCell player_posititon;
+	Block player_posititon;
 	FieldCell endgame_position;
 	field_blocks_t blocks;
 
@@ -32,7 +32,7 @@ public:
 
 	size_t get_row_size() const { return row_size; }
 	size_t get_col_size() const { return col_size; }
-	const FieldCell& get_player_position() const { return player_posititon; }
+	const FieldCell& get_player_position() const { return player_posititon.upper_left_cell_pos; }
 	const FieldCell& get_endgame_position() const { return endgame_position; }
 	const field_blocks_t& get_field_blocks() const { return blocks; }
 

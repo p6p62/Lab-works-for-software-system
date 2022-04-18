@@ -11,7 +11,7 @@ bool Field::set_player_position(FieldCell cell)
 	bool result{ check_cell_value(cell) };
 	if (result)
 	{
-		player_posititon = cell;
+		player_posititon.upper_left_cell_pos = cell;
 	}
 	return result;
 }
@@ -28,7 +28,7 @@ bool Field::set_endgame_position(FieldCell cell)
 
 bool Field::is_endgame_state()
 {
-	return player_posititon.row == endgame_position.row && player_posititon.col == endgame_position.col;
+	return player_posititon.upper_left_cell_pos.row == endgame_position.row && player_posititon.upper_left_cell_pos.col == endgame_position.col;
 }
 
 bool is_blocks_intersected(Block& b1, Block& b2)
@@ -82,7 +82,7 @@ void Field::print_field(std::ostream& out, const Field& field, const field_block
 	temp.assign(field.row_size, std::vector<size_t>(field.col_size));
 
 	int n{ 1 };
-	for (auto block : blocks)
+	for (auto& block : blocks)
 	{
 		for (size_t i = 0; i < block.row_size; i++)
 		{
@@ -98,7 +98,7 @@ void Field::print_field(std::ostream& out, const Field& field, const field_block
 	while ((n /= 10) > 0)
 		width++;
 
-	for (auto row : temp)
+	for (auto& row : temp)
 	{
 		for (auto col : row)
 		{

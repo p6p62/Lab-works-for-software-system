@@ -32,6 +32,7 @@ public:
 
 	size_t get_row_size() const { return row_size; }
 	size_t get_col_size() const { return col_size; }
+	const Block& get_player_block() const { return player_posititon; }
 	const FieldCell& get_player_position() const { return player_posititon.upper_left_cell_pos; }
 	const FieldCell& get_endgame_position() const { return endgame_position; }
 	const field_blocks_t& get_field_blocks() const { return blocks; }

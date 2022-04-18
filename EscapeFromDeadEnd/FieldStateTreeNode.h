@@ -12,21 +12,25 @@ private:
 	*/
 	struct MoveOnField
 	{
-		bool is_player_move;
-		FieldCell new_player_position;
-		Block& moved_block;
+		const Block& moved_block;
 		FieldCell new_moved_block_upper_left_cell;
 	};
 private:
 	FieldStateTreeNode* previous_state_;
 
-	// номер этого состояния среди других следующих из previous_state состояний
+	/// <summary>
+	/// Номер этого состояния среди других состояний, доступных из previous_state_ 
+	/// </summary>
 	size_t state_number_;
 
 	Field current_field_;
 	std::vector<MoveOnField> next_states_in_moves_;
 private:
+	/// <summary>
+	/// Вычисляет узлы дерева состояний, до которых можно добраться из этого узла
+	/// </summary>
 	void create_next_states();
+	void add_next_states_for_block(const Block& moved_block, std::vector<MoveOnField>& collected_states, int const* const* field_mask);
 public:
 	FieldStateTreeNode(FieldStateTreeNode* previous_state, size_t state_number, Field field);
 

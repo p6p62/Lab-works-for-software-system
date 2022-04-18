@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "Field.h"
 #include "FieldDrawer.h"
+#include "FieldStateTreeNode.h"
 
 using std::cout;
 using std::endl;
@@ -25,6 +26,9 @@ int main()
 
 	Field::print_field(cout, f, f.get_field_blocks());
 
+	// рисование поля
 	FieldDrawer drawer(&f);
 	drawer.draw_field();
+
+	FieldStateTreeNode n{ nullptr, 0, f };
 }

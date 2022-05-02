@@ -23,8 +23,9 @@ int** field_to_array(Field& field)
 	result_array[player_row][player_col] = OCCUPIED_VALUE;
 
 	// добавление точки выхода
-	const FieldCell& end_point{ field.get_endgame_position() };
-	result_array[end_point.row][end_point.col] = OCCUPIED_VALUE;
+	// TODO подумать
+	/*const FieldCell& end_point{ field.get_endgame_position() };
+	result_array[end_point.row][end_point.col] = OCCUPIED_VALUE;*/
 
 	// добавление блоков поля
 	for (const Block& block : field.get_field_blocks())
@@ -146,12 +147,12 @@ void FieldStateTreeNode::add_next_states_for_block(const Block& moved_block, std
 }
 
 FieldStateTreeNode::FieldStateTreeNode() : FieldStateTreeNode(Field(1, 1))
-{}
-
-FieldStateTreeNode::FieldStateTreeNode(Field field) : FieldStateTreeNode(nullptr, 0, field)
 {
 	next_states_in_moves_.clear();
 }
+
+FieldStateTreeNode::FieldStateTreeNode(Field field) : FieldStateTreeNode(nullptr, 0, field)
+{}
 
 FieldStateTreeNode::FieldStateTreeNode(FieldStateTreeNode* previous_state, size_t state_number, Field field) : current_field_(field)
 {

@@ -12,7 +12,7 @@ private:
 	*/
 	struct MoveOnField
 	{
-		const Block& moved_block;
+		Block moved_block;
 		FieldCell new_moved_block_upper_left_cell;
 	};
 private:
@@ -39,5 +39,7 @@ public:
 	size_t get_next_states_count() { return next_states_in_moves_.size(); }
 	bool get_next_field_state_by_index(size_t index, FieldStateTreeNode& resulted_state);
 	const Field& get_current_field() const { return current_field_; }
+	FieldStateTreeNode* get_previous_state() { return previous_state_; }
+	size_t get_state_number() const { return state_number_; }
 };
 

@@ -27,6 +27,9 @@
     <ClCompile Include="FieldStateTreeNode.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="SolutionAlgorithms.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Field.h">
@@ -36,6 +39,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="FieldStateTreeNode.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="SolutionAlgorithms.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

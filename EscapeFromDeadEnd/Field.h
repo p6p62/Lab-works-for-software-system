@@ -46,10 +46,10 @@ public:
 	const FieldCell& get_player_position() const { return player_posititon.upper_left_cell_pos; }
 	const FieldCell& get_endgame_position() const { return endgame_position; }
 	const field_blocks_t& get_field_blocks() const { return blocks; }
+	bool is_endgame_state() const;
 
 	bool set_player_position(FieldCell cell);
 	bool set_endgame_position(FieldCell cell);
-	bool is_endgame_state();
 	bool add_field_block(Block block);
 	bool replace_block(const Block& replaced_block, FieldCell& new_left_up__cell_position);
 

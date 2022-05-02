@@ -26,7 +26,7 @@ bool Field::set_endgame_position(FieldCell cell)
 	return result;
 }
 
-bool Field::is_endgame_state()
+bool Field::is_endgame_state() const
 {
 	return player_posititon.upper_left_cell_pos.row == endgame_position.row && player_posititon.upper_left_cell_pos.col == endgame_position.col;
 }

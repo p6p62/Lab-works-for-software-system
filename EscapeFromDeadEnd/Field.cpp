@@ -76,6 +76,27 @@ bool Field::add_field_block(Block block)
 	return result;
 }
 
+bool Field::replace_block(const Block& replaced_block, FieldCell& new_left_up__cell_position)
+{
+	bool result{ false };
+	if (player_posititon == replaced_block)
+	{
+		player_posititon.upper_left_cell_pos = new_left_up__cell_position;
+		result = true;
+	}
+	else
+		for (Block& block : blocks)
+		{
+			if (block == replaced_block)
+			{
+				block.upper_left_cell_pos = new_left_up__cell_position;
+				result = true;
+				break;
+			}
+		}
+	return result;
+}
+
 void Field::print_field(std::ostream& out, const Field& field, const field_blocks_t& blocks)
 {
 	std::vector<std::vector<size_t>> temp;

@@ -31,4 +31,16 @@ int main()
 	drawer.draw_field();
 
 	FieldStateTreeNode n{ nullptr, 0, f };
+	FieldStateTreeNode n3;
+	n.get_next_field_state_by_index(3, n3);
+
+	std::vector<Field> t;
+	for (int i = 0; i < n.get_next_states_count(); i++)
+	{
+		FieldStateTreeNode ntemp;
+		n.get_next_field_state_by_index(i, ntemp);
+		t.push_back(ntemp.get_current_field());
+		//Field::print_field(cout, ntemp.get_current_field(), ntemp.get_current_field().get_field_blocks());
+		//cout << endl;
+	}
 }

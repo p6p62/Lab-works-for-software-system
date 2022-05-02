@@ -32,9 +32,12 @@ private:
 	void create_next_states();
 	void add_next_states_for_block(const Block& moved_block, std::vector<MoveOnField>& collected_states, int const* const* field_mask);
 public:
+	FieldStateTreeNode();
+	FieldStateTreeNode(Field field);
 	FieldStateTreeNode(FieldStateTreeNode* previous_state, size_t state_number, Field field);
 
 	size_t get_next_states_count() { return next_states_in_moves_.size(); }
 	bool get_next_field_state_by_index(size_t index, FieldStateTreeNode& resulted_state);
+	const Field& get_current_field() const { return current_field_; }
 };
 

@@ -103,6 +103,7 @@ bool check_block_move(const Block& moved_block, int left_to_right_offset, int up
 
 void FieldStateTreeNode::create_next_states()
 {
+	next_states_in_moves_.clear();
 	int** field_grid = field_to_array(current_field_); // таблица-"маска" текущего поля
 
 	// добавление состояний после ходов игрока
@@ -144,6 +145,14 @@ void FieldStateTreeNode::add_next_states_for_block(const Block& moved_block, std
 	f(0, 1);
 }
 
+FieldStateTreeNode::FieldStateTreeNode() : FieldStateTreeNode(Field(1, 1))
+{}
+
+FieldStateTreeNode::FieldStateTreeNode(Field field) : FieldStateTreeNode(nullptr, 0, field)
+{
+	next_states_in_moves_.clear();
+}
+
 FieldStateTreeNode::FieldStateTreeNode(FieldStateTreeNode* previous_state, size_t state_number, Field field) : current_field_(field)
 {
 	previous_state_ = previous_state;
@@ -154,6 +163,18 @@ FieldStateTreeNode::FieldStateTreeNode(FieldStateTreeNode* previous_state, size_
 
 bool FieldStateTreeNode::get_next_field_state_by_index(size_t index, FieldStateTreeNode& resulted_state)
 {
-	//TODO
-	return false;
+	bool result{ false };
+	if (index < this->next_states_in_moves_.size())
+	{
+		resulted_state.previous_state_ = this;
+		resulted_state.state_number_ = index;
+		resulted_state.current_field_ = current_field_;
+
+		MoveOnField delta = this->next_states_in_moves_.at(index);
+		resulted_state.current_field_.replace_block(delta.moved_block, delta.new_moved_block_upper_left_cell);
+		resulted_state.create_next_states();
+
+		result = true;
+	}
+	return result;
 }

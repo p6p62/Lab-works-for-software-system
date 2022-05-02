@@ -6,6 +6,11 @@ struct FieldCell
 {
 	size_t row = 0;
 	size_t col = 0;
+
+	bool operator== (const FieldCell& cell)
+	{
+		return row == cell.row && col == cell.col;
+	}
 };
 
 struct Block
@@ -13,6 +18,11 @@ struct Block
 	size_t row_size = 1;
 	size_t col_size = 1;
 	FieldCell upper_left_cell_pos;
+
+	bool operator== (const Block& block)
+	{
+		return row_size == block.row_size && col_size == block.col_size && upper_left_cell_pos == block.upper_left_cell_pos;
+	}
 };
 
 using field_blocks_t = std::vector<Block>;
@@ -41,6 +51,7 @@ public:
 	bool set_endgame_position(FieldCell cell);
 	bool is_endgame_state();
 	bool add_field_block(Block block);
+	bool replace_block(const Block& replaced_block, FieldCell& new_left_up__cell_position);
 
 	static void print_field(std::ostream& out, const Field& field, const field_blocks_t& blocks);
 };

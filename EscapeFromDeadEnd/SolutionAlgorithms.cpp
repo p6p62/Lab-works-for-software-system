@@ -46,7 +46,6 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 	while (current_checked_index < generated_states.size()
 		&& !generated_states.at(current_checked_index).get_current_field().is_endgame_state())
 	{
-		FieldStateTreeNode* current_state = &generated_states.at(current_checked_index);
 		for (size_t i = 0; i < generated_states.at(current_checked_index).get_next_states_count(); i++)
 		{
 			generated_states.push_back(FieldStateTreeNode());

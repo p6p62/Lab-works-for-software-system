@@ -6,6 +6,24 @@ bool Field::check_cell_value(FieldCell& cell)
 	return (cell.row < row_size) && (cell.col < col_size);
 }
 
+bool Field::operator==(const Field& f)
+{
+	if (row_size != f.row_size || col_size != f.col_size)
+		return false;
+	if (!(player_posititon == f.player_posititon))
+		return false;
+	if (!(endgame_position == f.endgame_position))
+		return false;
+	if (blocks.size() != f.blocks.size())
+		return false;
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		if (!(blocks[i] == f.blocks[i]))
+			return false;
+	}
+	return true;
+}
+
 bool Field::set_player_position(FieldCell cell)
 {
 	bool result{ check_cell_value(cell) };

@@ -40,6 +40,8 @@ private:
 public:
 	Field(size_t rows, size_t cols) { row_size = rows; col_size = cols; }
 
+	bool operator== (const Field& f);
+
 	size_t get_row_size() const { return row_size; }
 	size_t get_col_size() const { return col_size; }
 	const Block& get_player_block() const { return player_posititon; }

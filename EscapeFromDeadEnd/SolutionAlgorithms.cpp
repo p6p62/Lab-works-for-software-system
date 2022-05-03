@@ -9,7 +9,7 @@ bool recursive_depth_search(int current_depth, const int depth_limit, FieldState
 
 	if (current_depth < depth_limit && current_state.get_next_states_count() > 0)
 	{
-		for (int i = 0; i < current_state.get_next_states_count(); i++)
+		for (size_t i = 0; i < current_state.get_next_states_count(); i++)
 		{
 			FieldStateTreeNode next_state;
 			current_state.get_next_field_state_by_index(i, next_state);
@@ -32,43 +32,40 @@ bool SolutionAlgorithms::get_answer_by_depth_search(const Field& start_field, co
 
 bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, std::vector<Field>& result)
 {
-	// TODO
-	std::vector<FieldStateTreeNode> generated_states;
-	// эмпирически выбранное число. Эту строку не удалять, без неё перестаёт
-	// работать обращение по указателю к родительскому элементу из-за перераспределения
-	// вектора внутри себя. Попозже надо переделать на ручное выделение или переосмыслить
-	// хранение данных о родителе
-	generated_states.reserve(100 * start_field.get_col_size() * start_field.get_row_size());
-	generated_states.push_back(FieldStateTreeNode(start_field));
+	std::vector<FieldStateTreeNode*> generated_states;
+	generated_states.push_back(new FieldStateTreeNode(start_field));
 
 	// поиск состояния выхода
 	size_t current_checked_index = 0;
 	while (current_checked_index < generated_states.size()
-		&& !generated_states.at(current_checked_index).get_current_field().is_endgame_state())
+		&& !generated_states.at(current_checked_index)->get_current_field().is_endgame_state())
 	{
-		for (size_t i = 0; i < generated_states.at(current_checked_index).get_next_states_count(); i++)
+		for (size_t i = 0; i < generated_states.at(current_checked_index)->get_next_states_count(); i++)
 		{
-			generated_states.push_back(FieldStateTreeNode());
-			generated_states.at(current_checked_index).get_next_field_state_by_index(i, generated_states.at(generated_states.size() - 1));
+			generated_states.push_back(new FieldStateTreeNode());
+			generated_states.at(current_checked_index)->get_next_field_state_by_index(i, *generated_states.at(generated_states.size() - 1));
 
 			// проверка на то, были в этом состоянии или нет
 			bool is_visited = false;
-			for (size_t j = 0; j < generated_states.size() - 1; j++)
+			for (int j = generated_states.size() - 2; j >= 0; j--)
 			{
-				if ((Field)generated_states.at(j).get_current_field() == generated_states.at(generated_states.size() - 1).get_current_field())
+				if ((Field&)generated_states.at(j)->get_current_field() == generated_states.at(generated_states.size() - 1)->get_current_field())
 				{
 					is_visited = true;
 					break;
 				}
 			}
 			if (is_visited)
-				generated_states.pop_back();
+			{
+				delete generated_states.at(generated_states.size() - 1); // освобождаю память по указателю
+				generated_states.pop_back(); // и удаляю состояние
+			}
 		}
 		current_checked_index++;
 	}
 
 	// возврат по прошлым состояниям и заполнение ответа
-	FieldStateTreeNode* state = &generated_states.at(current_checked_index);
+	FieldStateTreeNode* state = generated_states.at(current_checked_index);
 	bool search_result = state->get_current_field().is_endgame_state();
 	if (state->get_current_field().is_endgame_state())
 	{
@@ -78,6 +75,12 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 			state = state->get_previous_state();
 		}
 		result.insert(result.begin(), state->get_current_field());
+	}
+
+	// освобождение памяти
+	for (size_t i = 0; i < generated_states.size(); i++)
+	{
+		delete generated_states.at(i);
 	}
 
 	return search_result;

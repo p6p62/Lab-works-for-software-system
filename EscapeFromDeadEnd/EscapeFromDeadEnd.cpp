@@ -5,6 +5,9 @@
 #include "SolutionAlgorithms.h"
 #include <thread>
 
+//#define DEPTH_SEARCH
+#define WIDTH_SEARCH
+
 using std::cout;
 using std::endl;
 
@@ -29,15 +32,16 @@ Field get_medium_field()
 
 Field get_hard_field()
 {
-	Field f(7, 7);
-	f.set_player_position({ 5, 0 });
-	f.set_endgame_position({ 6, 6 });
-	f.add_field_block({ 1,1,{6,5} });
-	//f.add_field_block({ 2, 1, {4,4} });
-	//f.add_field_block({ 1,3,{2,4} });
-	//f.add_field_block({ 1, 1, {3, 4} });
-	//f.add_field_block({ 1, 2, {5, 5} });
-	//f.add_field_block({ 4, 1, {2, 3} });
+	Field f(5, 5);
+	f.set_player_position({ 3, 0 });
+	f.set_endgame_position({ 4, 4 });
+	f.add_field_block({ 1,1,{4,3} });
+	f.add_field_block({ 2, 1, {2,2} });
+	f.add_field_block({ 1,3,{0,2} });
+	f.add_field_block({ 1, 1, {1, 2} });
+	f.add_field_block({ 1, 2, {3, 3} });
+	f.add_field_block({ 4, 1, {0, 1} });
+	f.add_field_block({ 1, 2, {4, 1} });
 	return f;
 }
 
@@ -61,17 +65,15 @@ int main()
 		t.join();
 	};
 
-	Field field{ get_easy_field() };
-	//draw_field(field);
-
+#ifdef DEPTH_SEARCH
 	std::vector<Field> escape_way;
-	std::vector<Field> escape_way2;
-	//bool search_res{ SolutionAlgorithms::get_answer_by_depth_search(field, 10, escape_way) };
-	//draw_field(escape_way.at(escape_way.size() - 1));
-	//draw_answer_states(escape_way);
+	bool search_res{ SolutionAlgorithms::get_answer_by_depth_search(get_medium_field(), 15, escape_way) };
+	draw_answer_states(escape_way);
+#endif // DEPTH_SEARCH
 
+#ifdef WIDTH_SEARCH
+	std::vector<Field> escape_way2;
 	bool search_res2{ SolutionAlgorithms::get_answer_by_width_search(get_hard_field(), escape_way2) };
-	//draw_field(escape_way2.at(escape_way2.size() - 1));
-	draw_f(get_hard_field());
 	draw_answer_states(escape_way2);
+#endif // WIDTH_SEARCH
 }

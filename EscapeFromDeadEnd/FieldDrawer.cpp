@@ -18,7 +18,7 @@ std::string convert_field_to_string(const Field& field)
 	string_field.append(std::to_string(field.get_endgame_position().row)).push_back(' ');
 	string_field.append(std::to_string(field.get_endgame_position().col)).push_back(' ');
 
-	for (auto block : field.get_field_blocks())
+	for (auto& block : field.get_field_blocks())
 	{
 		string_field.append(std::to_string(block.row_size)).push_back(' ');
 		string_field.append(std::to_string(block.col_size)).push_back(' ');

@@ -25,9 +25,25 @@ bool recursive_depth_search(int current_depth, const int depth_limit, FieldState
 	return false;
 }
 
-bool SolutionAlgorithms::get_answer_by_depth_search(const Field& start_field, const int depth_limit, std::vector<Field>& result)
+bool SolutionAlgorithms::get_answer_by_depth_search(const Field& start_field, const int depth_limit, std::vector<Field>& result, WorkResult* const out_performance)
 {
-	return recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result);
+	// для замеров производительности
+	bool is_need_performance_measure = out_performance != nullptr;
+	clock_t start_clocks;
+	if (is_need_performance_measure)
+	{
+		start_clocks = clock();
+	}
+
+	bool search_result = recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result);
+
+	// заполнение данных о производительности
+	if (is_need_performance_measure)
+	{
+		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
+	}
+
+	return search_result;
 }
 
 bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, std::vector<Field>& result, WorkResult* const out_performance)

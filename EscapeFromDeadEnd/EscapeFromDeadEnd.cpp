@@ -6,7 +6,7 @@
 #include <thread>
 #include <string>
 
-//#define DEPTH_SEARCH
+#define DEPTH_SEARCH
 #define WIDTH_SEARCH
 #define PERFORMANCE_MEASURES
 
@@ -77,7 +77,15 @@ int main()
 
 #ifdef DEPTH_SEARCH
 	std::vector<Field> escape_way;
-	bool search_res{ SolutionAlgorithms::get_answer_by_depth_search(get_medium_field(), 15, escape_way) };
+	bool search_res_depth;
+	cout << "---ПОИСК В ГЛУБИНУ---\n";
+#ifdef PERFORMANCE_MEASURES
+	WorkResult performance_metrics_d;
+	search_res_depth = SolutionAlgorithms::get_answer_by_depth_search(get_easy_field(), 15, escape_way, &performance_metrics_d);
+	cout << convert_perf_metrics_to_string(performance_metrics_d) << endl << endl;
+#else
+	search_res_depth = SolutionAlgorithms::get_answer_by_depth_search(get_medium_field(), 15, escape_way);
+#endif // PERFORMANCE_MEASURES
 	draw_answer_states(escape_way);
 #endif // DEPTH_SEARCH
 

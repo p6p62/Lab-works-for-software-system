@@ -4,12 +4,15 @@
 #include "FieldStateTreeNode.h"
 #include "SolutionAlgorithms.h"
 #include <thread>
+#include <string>
 
 //#define DEPTH_SEARCH
 #define WIDTH_SEARCH
+#define PERFORMANCE_MEASURES
 
 using std::cout;
 using std::endl;
+using WorkResult = SolutionAlgorithms::WorkResult;
 
 Field get_easy_field()
 {
@@ -51,19 +54,26 @@ void draw_f(const Field& f)
 	d.draw_field();
 }
 
+std::string convert_perf_metrics_to_string(WorkResult& metrics)
+{
+	std::string str = "\tПоказатели алгоритма\n";
+	str += "Время работы: " + std::to_string(metrics.seconds) + " с.";
+	return str;
+}
+
+void draw_answer_states(const std::vector<Field>& escape_way)
+{
+	for (int i = 0; i < escape_way.size(); i++)
+	{
+		const Field& f = escape_way[i];
+		draw_f(f);
+	}
+};
+
 int main()
 {
-	auto draw_answer_states = [](const std::vector<Field>& escape_way)
-	{
-		for (int i = 0; i < escape_way.size() - 1; i++)
-		{
-			const Field& f = escape_way[i];
-			std::thread t(draw_f, f);
-			t.join();
-		}
-		std::thread t(draw_f, escape_way.at(escape_way.size() - 1));
-		t.join();
-	};
+	setlocale(LC_ALL, "Russian"); // русский язык, но разделитель чисел - точка
+	setlocale(LC_NUMERIC, "English");
 
 #ifdef DEPTH_SEARCH
 	std::vector<Field> escape_way;
@@ -73,7 +83,15 @@ int main()
 
 #ifdef WIDTH_SEARCH
 	std::vector<Field> escape_way2;
-	bool search_res2{ SolutionAlgorithms::get_answer_by_width_search(get_hard_field(), escape_way2) };
+	bool search_res_width;
+	cout << "---ПОИСК В ШИРИНУ---\n";
+#ifdef PERFORMANCE_MEASURES
+	WorkResult performance_metrics;
+	search_res_width = SolutionAlgorithms::get_answer_by_width_search(get_medium_field(), escape_way2, &performance_metrics);
+	cout << convert_perf_metrics_to_string(performance_metrics) << endl << endl;
+#else
+	search_res_width = SolutionAlgorithms::get_answer_by_width_search(get_medium_field(), escape_way2);
+#endif // PERFORMANCE_MEASURES
 	draw_answer_states(escape_way2);
 #endif // WIDTH_SEARCH
 }

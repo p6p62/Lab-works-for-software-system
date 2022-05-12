@@ -30,8 +30,16 @@ bool SolutionAlgorithms::get_answer_by_depth_search(const Field& start_field, co
 	return recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result);
 }
 
-bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, std::vector<Field>& result)
+bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, std::vector<Field>& result, WorkResult* const out_performance)
 {
+	// для замеров производительности
+	bool is_need_performance_measure = out_performance != nullptr;
+	clock_t start_clocks;
+	if (is_need_performance_measure)
+	{
+		start_clocks = clock();
+	}
+
 	std::vector<FieldStateTreeNode*> generated_states;
 	generated_states.push_back(new FieldStateTreeNode(start_field));
 
@@ -81,6 +89,12 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 	for (size_t i = 0; i < generated_states.size(); i++)
 	{
 		delete generated_states.at(i);
+	}
+
+	// заполнение данных о производительности
+	if (is_need_performance_measure)
+	{
+		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
 	}
 
 	return search_result;

@@ -5,10 +5,7 @@
 #include "SolutionAlgorithms.h"
 #include <thread>
 #include <string>
-
-#define DEPTH_SEARCH
-#define WIDTH_SEARCH
-#define PERFORMANCE_MEASURES
+#include <functional>
 
 using std::cout;
 using std::endl;
@@ -70,36 +67,44 @@ void draw_answer_states(const std::vector<Field>& escape_way)
 	}
 };
 
+void call_search
+(
+	std::function<bool(const Field&, std::vector<Field>&, WorkResult*)> const& search_function, // вызываемый алгоритм
+	const Field& start_field, // начальное состояние
+	const std::string& algorithm_name, // имя алгоритма для отображения
+	bool need_performance_measures // управление расчетом показателями производительности
+)
+{
+	std::vector<Field> escape_way;
+	WorkResult perf_stats;
+
+	// вызов алгоритма
+	search_function(start_field, escape_way, (need_performance_measures) ? &perf_stats : nullptr);
+
+	// вывод результатов
+	cout << algorithm_name << endl;
+	if (need_performance_measures)
+		cout << convert_perf_metrics_to_string(perf_stats) << endl << endl;
+	draw_answer_states(escape_way);
+}
+
 int main()
 {
-	setlocale(LC_ALL, "Russian"); // русский язык, но разделитель чисел - точка
+	const int DEPTH_LIMIT = 15; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
+
+	setlocale(LC_ALL, "Russian"); // чтобы был русский язык, но разделитель чисел - точка
 	setlocale(LC_NUMERIC, "English");
 
-#ifdef DEPTH_SEARCH
-	std::vector<Field> escape_way;
-	bool search_res_depth;
-	cout << "---ПОИСК В ГЛУБИНУ---\n";
-#ifdef PERFORMANCE_MEASURES
-	WorkResult performance_metrics_d;
-	search_res_depth = SolutionAlgorithms::get_answer_by_depth_search(get_easy_field(), 15, escape_way, &performance_metrics_d);
-	cout << convert_perf_metrics_to_string(performance_metrics_d) << endl << endl;
-#else
-	search_res_depth = SolutionAlgorithms::get_answer_by_depth_search(get_medium_field(), 15, escape_way);
-#endif // PERFORMANCE_MEASURES
-	draw_answer_states(escape_way);
-#endif // DEPTH_SEARCH
+	auto depth_search = [DEPTH_LIMIT](const Field& f, std::vector<Field>& out, WorkResult* perf_m) -> bool
+	{
+		return SolutionAlgorithms::get_answer_by_depth_search(f, DEPTH_LIMIT, out, perf_m);
+	};
 
-#ifdef WIDTH_SEARCH
-	std::vector<Field> escape_way2;
-	bool search_res_width;
-	cout << "---ПОИСК В ШИРИНУ---\n";
-#ifdef PERFORMANCE_MEASURES
-	WorkResult performance_metrics;
-	search_res_width = SolutionAlgorithms::get_answer_by_width_search(get_medium_field(), escape_way2, &performance_metrics);
-	cout << convert_perf_metrics_to_string(performance_metrics) << endl << endl;
-#else
-	search_res_width = SolutionAlgorithms::get_answer_by_width_search(get_medium_field(), escape_way2);
-#endif // PERFORMANCE_MEASURES
-	draw_answer_states(escape_way2);
-#endif // WIDTH_SEARCH
+	auto width_search = [](const Field& f, std::vector<Field>& out, WorkResult* perf_m) -> bool
+	{
+		return SolutionAlgorithms::get_answer_by_width_search(f, out, perf_m);
+	};
+
+	call_search(depth_search, get_easy_field(), "---ПОИСК В ГЛУБИНУ---", true);
+	call_search(width_search, get_medium_field(), "---ПОИСК В ШИРИНУ---", true);
 }

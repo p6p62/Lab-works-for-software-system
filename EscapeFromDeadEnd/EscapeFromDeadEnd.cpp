@@ -6,6 +6,7 @@
 #include <thread>
 #include <string>
 #include <functional>
+#include <chrono>
 
 using std::cout;
 using std::endl;
@@ -78,11 +79,30 @@ void call_search
 	std::vector<Field> escape_way;
 	WorkResult perf_stats;
 
+	// вызов отображения сообщения в отдельном потоке
+	size_t notification_counter = 0;
+	bool isFinish{ false };
+	std::thread thr_message([&notification_counter, &isFinish]()
+		{
+			using namespace std::chrono_literals;
+			while (!isFinish)
+			{
+				cout << "Всё ещё выполняется... Прошло " << notification_counter << " с.\n";
+				const size_t message_delay_seconds = 3;
+				notification_counter += message_delay_seconds;
+				std::this_thread::sleep_for(std::chrono::seconds(message_delay_seconds));
+			}
+		});
+	thr_message.detach();
+
 	// вызов алгоритма
 	search_function(start_field, escape_way, (need_performance_measures) ? &perf_stats : nullptr);
 
+	// остановка потока сообщений
+	isFinish = true;
+
 	// вывод результатов
-	cout << algorithm_name << endl;
+	cout << endl << algorithm_name << endl;
 	if (need_performance_measures)
 		cout << convert_perf_metrics_to_string(perf_stats) << endl << endl;
 	draw_answer_states(escape_way);
@@ -90,7 +110,7 @@ void call_search
 
 int main()
 {
-	const int DEPTH_LIMIT = 15; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
+	const int DEPTH_LIMIT = 10; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
 
 	setlocale(LC_ALL, "Russian"); // чтобы был русский язык, но разделитель чисел - точка
 	setlocale(LC_NUMERIC, "English");

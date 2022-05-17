@@ -1,4 +1,5 @@
 #include "FieldStateTreeNode.h"
+#include <algorithm>
 
 /// <summary>
 /// œŒ—À≈ »—œŒÀ‹«Œ¬¿Õ»ﬂ –≈«”À‹“¿“¿ ‘”Õ ÷»» Œ◊»—“»“‹ œ¿Ãﬂ“‹!!!
@@ -146,6 +147,31 @@ void FieldStateTreeNode::add_next_states_for_block(const Block& moved_block, std
 	f(0, 1);
 }
 
+bool FieldStateTreeNode::get_next_field_state(const MoveOnField& move, FieldStateTreeNode& resulted_state, int index)
+{
+	if (index == -1)
+	{
+		for (int i = 0; i < next_states_in_moves_.size(); i++)
+		{
+			if (next_states_in_moves_[i] == move)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return false;
+	}
+
+	resulted_state.state_number_ = index;
+	resulted_state.previous_state_ = this;
+	resulted_state.current_field_ = current_field_;
+	resulted_state.current_field_.replace_block(move.moved_block, move.new_moved_block_upper_left_cell);
+	resulted_state.create_next_states();
+
+	return true;
+}
+
 FieldStateTreeNode::FieldStateTreeNode() : FieldStateTreeNode(Field(1, 1))
 {
 	next_states_in_moves_.clear();
@@ -164,18 +190,17 @@ FieldStateTreeNode::FieldStateTreeNode(FieldStateTreeNode* previous_state, size_
 
 bool FieldStateTreeNode::get_next_field_state_by_index(size_t index, FieldStateTreeNode& resulted_state)
 {
-	bool result{ false };
-	if (index < this->next_states_in_moves_.size())
-	{
-		resulted_state.previous_state_ = this;
-		resulted_state.state_number_ = index;
-		resulted_state.current_field_ = current_field_;
+	return this->get_next_field_state(next_states_in_moves_.at(index), resulted_state, index);
+}
 
-		MoveOnField delta = this->next_states_in_moves_.at(index);
-		resulted_state.current_field_.replace_block(delta.moved_block, delta.new_moved_block_upper_left_cell);
-		resulted_state.create_next_states();
+void FieldStateTreeNode::sort_next_states_by_descend(const std::function<double(const Field&)>& evaluatingFunction)
+{
+	std::sort(next_states_in_moves_.begin(), next_states_in_moves_.end(),
+		[&](const MoveOnField& m1, const MoveOnField& m2) -> bool {
+			FieldStateTreeNode s1, s2;
+			get_next_field_state(m1, s1);
+			get_next_field_state(m2, s2);
 
-		result = true;
-	}
-	return result;
+			return evaluatingFunction(s1.get_current_field()) > evaluatingFunction(s2.get_current_field());
+		});
 }

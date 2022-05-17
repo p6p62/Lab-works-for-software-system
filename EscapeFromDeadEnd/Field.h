@@ -53,7 +53,7 @@ public:
 	bool set_player_position(FieldCell cell);
 	bool set_endgame_position(FieldCell cell);
 	bool add_field_block(Block block);
-	bool replace_block(const Block& replaced_block, FieldCell& new_left_up__cell_position);
+	bool replace_block(const Block& replaced_block, const FieldCell& new_left_up__cell_position);
 
 	static void print_field(std::ostream& out, const Field& field, const field_blocks_t& blocks);
 };

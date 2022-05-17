@@ -3,6 +3,7 @@
 #include "FieldDrawer.h"
 #include "FieldStateTreeNode.h"
 #include "SolutionAlgorithms.h"
+#include "FieldEvaluator.h"
 #include <thread>
 #include <string>
 #include <functional>
@@ -43,6 +44,14 @@ Field get_hard_field()
 	f.add_field_block({ 1, 2, {3, 3} });
 	f.add_field_block({ 4, 1, {0, 1} });
 	f.add_field_block({ 1, 2, {4, 1} });
+	return f;
+}
+
+Field get_big_empty_field()
+{
+	Field f(15, 15);
+	f.set_player_position({ 1, 3 });
+	f.set_endgame_position({ 14, 13 });
 	return f;
 }
 
@@ -110,7 +119,7 @@ void call_search
 
 int main()
 {
-	const int DEPTH_LIMIT = 10; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
+	const int DEPTH_LIMIT = 40; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
 
 	setlocale(LC_ALL, "Russian"); // чтобы был русский язык, но разделитель чисел - точка
 	setlocale(LC_NUMERIC, "English");
@@ -125,6 +134,15 @@ int main()
 		return SolutionAlgorithms::get_answer_by_width_search(f, out, perf_m);
 	};
 
-	call_search(depth_search, get_easy_field(), "---ПОИСК В ГЛУБИНУ---", true);
-	call_search(width_search, get_medium_field(), "---ПОИСК В ШИРИНУ---", true);
+	auto gradient_search = [DEPTH_LIMIT](const Field& f, std::vector<Field>& out, WorkResult* perf_m) -> bool
+	{
+		return SolutionAlgorithms::get_answer_by_gradient_descent(FieldEvaluator::get_evaluate, f, DEPTH_LIMIT, out, perf_m);
+	};
+
+	//call_search(depth_search, get_medium_field(), "---ПОИСК В ГЛУБИНУ---", true);
+	//call_search(width_search, get_medium_field(), "---ПОИСК В ШИРИНУ---", true);
+	call_search(gradient_search, get_easy_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	call_search(gradient_search, get_medium_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	call_search(gradient_search, get_hard_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	call_search(gradient_search, get_big_empty_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 }

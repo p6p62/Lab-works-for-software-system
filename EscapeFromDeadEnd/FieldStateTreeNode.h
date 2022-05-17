@@ -1,5 +1,6 @@
 #pragma once
 #include "Field.h"
+#include <functional>
 
 class FieldStateTreeNode
 {
@@ -14,6 +15,11 @@ private:
 	{
 		Block moved_block;
 		FieldCell new_moved_block_upper_left_cell;
+
+		bool operator== (const MoveOnField& m)
+		{
+			return this->moved_block == m.moved_block && this->new_moved_block_upper_left_cell == m.new_moved_block_upper_left_cell;
+		}
 	};
 private:
 	FieldStateTreeNode* previous_state_;
@@ -31,6 +37,7 @@ private:
 	/// </summary>
 	void create_next_states();
 	void add_next_states_for_block(const Block& moved_block, std::vector<MoveOnField>& collected_states, int const* const* field_mask);
+	bool get_next_field_state(const MoveOnField& move, FieldStateTreeNode& resulted_state, int index = -1);
 public:
 	FieldStateTreeNode();
 	FieldStateTreeNode(Field field);
@@ -41,5 +48,6 @@ public:
 	const Field& get_current_field() const { return current_field_; }
 	FieldStateTreeNode* get_previous_state() { return previous_state_; }
 	size_t get_state_number() const { return state_number_; }
+	void sort_next_states_by_descend(const std::function<double(const Field&)>& evaluatingFunction);
 };
 

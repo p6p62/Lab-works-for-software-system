@@ -94,7 +94,7 @@ bool Field::add_field_block(Block block)
 	return result;
 }
 
-bool Field::replace_block(const Block& replaced_block, FieldCell& new_left_up__cell_position)
+bool Field::replace_block(const Block& replaced_block, const FieldCell& new_left_up__cell_position)
 {
 	bool result{ false };
 	if (player_posititon == replaced_block)

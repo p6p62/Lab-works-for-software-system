@@ -61,8 +61,8 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 		start_clocks = clock();
 	}
 
-	std::vector<FieldStateTreeNode*> generated_states;
-	generated_states.push_back(new FieldStateTreeNode(start_field));
+	std::vector<std::unique_ptr<FieldStateTreeNode>> generated_states;
+	generated_states.push_back(std::make_unique<FieldStateTreeNode>(FieldStateTreeNode(start_field)));
 
 	// поиск состояния выхода
 	size_t current_checked_index = 0;
@@ -71,7 +71,7 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 	{
 		for (size_t i = 0; i < generated_states.at(current_checked_index)->get_next_states_count(); i++)
 		{
-			generated_states.push_back(new FieldStateTreeNode());
+			generated_states.push_back(std::make_unique<FieldStateTreeNode>(FieldStateTreeNode()));
 			generated_states.at(current_checked_index)->get_next_field_state_by_index(i, *generated_states.at(generated_states.size() - 1));
 
 			// проверка на то, были в этом состоянии или нет
@@ -86,15 +86,14 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 			}
 			if (is_visited)
 			{
-				delete generated_states.at(generated_states.size() - 1); // освобождаю память по указателю
-				generated_states.pop_back(); // и удаляю состояние
+				generated_states.pop_back(); // удаляю состояние, автоматически освобождается память по указателю
 			}
 		}
 		current_checked_index++;
 	}
 
 	// возврат по прошлым состояниям и заполнение ответа
-	FieldStateTreeNode* state = generated_states.at(current_checked_index);
+	FieldStateTreeNode* state = generated_states.at(current_checked_index).get();
 	bool search_result = state->get_current_field().is_endgame_state();
 	if (state->get_current_field().is_endgame_state())
 	{
@@ -104,12 +103,6 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 			state = state->get_previous_state();
 		}
 		result.insert(result.begin(), state->get_current_field());
-	}
-
-	// освобождение памяти
-	for (size_t i = 0; i < generated_states.size(); i++)
-	{
-		delete generated_states.at(i);
 	}
 
 	// заполнение данных о производительности

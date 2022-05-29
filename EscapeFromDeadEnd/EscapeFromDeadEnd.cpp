@@ -140,9 +140,9 @@ int main()
 	};
 
 	//call_search(depth_search, get_medium_field(), "---ПОИСК В ГЛУБИНУ---", true);
-	//call_search(width_search, get_medium_field(), "---ПОИСК В ШИРИНУ---", true);
-	call_search(gradient_search, get_easy_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	call_search(gradient_search, get_medium_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	call_search(gradient_search, get_hard_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	call_search(gradient_search, get_big_empty_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	call_search(width_search, get_medium_field(), "---ПОИСК В ШИРИНУ---", true);
+	//call_search(gradient_search, get_easy_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(gradient_search, get_medium_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(gradient_search, get_hard_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(gradient_search, get_big_empty_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 }

@@ -31,7 +31,7 @@ std::string convert_field_to_string(const Field& field)
 
 void FieldDrawer::draw_field()
 {
-	std::string call_string_base("java -classpath \"C:\\Users\\Boris\\eclipse-workspace\\EscapeFieldDrawer\\bin\" drawer.Drawer ");
+	std::string call_string_base("java -classpath \"C:\\Users\\Boris\\Desktop\\РаDICK\\Проектирование программных систем 2\\Выход из тупика\\EscapeFromDeadEnd\\EscapeFieldDrawer\\bin\" drawer.Drawer ");
 
 	if (this->drawed_field != nullptr)
 	{

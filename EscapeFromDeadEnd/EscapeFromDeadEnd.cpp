@@ -4,6 +4,7 @@
 #include "FieldStateTreeNode.h"
 #include "SolutionAlgorithms.h"
 #include "FieldEvaluator.h"
+#include "FieldGenerator.h"
 #include <thread>
 #include <string>
 #include <functional>
@@ -12,48 +13,6 @@
 using std::cout;
 using std::endl;
 using WorkResult = SolutionAlgorithms::WorkResult;
-
-Field get_easy_field()
-{
-	Field f(5, 5);
-	f.set_endgame_position({ 4, 4 });
-	f.set_player_position({ 0, 1 });
-	f.add_field_block({ 1, 2, { 4, 0 } });
-	return f;
-}
-
-Field get_medium_field()
-{
-	Field f(5, 5);
-	f.set_player_position({ 0, 0 });
-	f.set_endgame_position({ 4, 4 });
-	f.add_field_block({ 2, 2, {2, 0} });
-	f.add_field_block({ 3, 1, {0, 2} });
-	return f;
-}
-
-Field get_hard_field()
-{
-	Field f(5, 5);
-	f.set_player_position({ 3, 0 });
-	f.set_endgame_position({ 4, 4 });
-	f.add_field_block({ 1,1,{4,3} });
-	f.add_field_block({ 2, 1, {2,2} });
-	f.add_field_block({ 1,3,{0,2} });
-	f.add_field_block({ 1, 1, {1, 2} });
-	f.add_field_block({ 1, 2, {3, 3} });
-	f.add_field_block({ 4, 1, {0, 1} });
-	f.add_field_block({ 1, 2, {4, 1} });
-	return f;
-}
-
-Field get_big_empty_field()
-{
-	Field f(15, 15);
-	f.set_player_position({ 1, 3 });
-	f.set_endgame_position({ 14, 13 });
-	return f;
-}
 
 void draw_f(const Field& f)
 {
@@ -119,7 +78,10 @@ void call_search
 
 int main()
 {
-	const int DEPTH_LIMIT = 40; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
+	using FG = FieldGenerator;
+	using FT = FieldGenerator::FieldType;
+
+	const int DEPTH_LIMIT = 23; // ограничение глубины поиска для алгоритма поиска в глубину и подобных
 
 	setlocale(LC_ALL, "Russian"); // чтобы был русский язык, но разделитель чисел - точка
 	setlocale(LC_NUMERIC, "English");
@@ -144,12 +106,12 @@ int main()
 		return SolutionAlgorithms::get_answer_by_branchs_and_borders(FieldEvaluator::get_move_cost, f, out, perf_m);
 	};
 
-	//call_search(depth_search, get_medium_field(), "---ПОИСК В ГЛУБИНУ---", true);
-	//call_search(width_search, get_hard_field(), "---ПОИСК В ШИРИНУ---", true);
-	//call_search(gradient_search, get_easy_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	//call_search(gradient_search, get_medium_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	call_search(gradient_search, get_hard_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	//call_search(gradient_search, get_big_empty_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	//call_search(branchs_and_borders, get_medium_field(), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
-	call_search(branchs_and_borders, get_hard_field(), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
+	//call_search(depth_search, FG::get_field(FT::Medium), "---ПОИСК В ГЛУБИНУ---", true);
+	//call_search(width_search, FG::get_field(FT::Hard), "---ПОИСК В ШИРИНУ---", true);
+	//call_search(gradient_search, FG::get_field(FT::Easy), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(gradient_search, FG::get_field(FT::Medium), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(gradient_search, FG::get_field(FT::Hard), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(gradient_search, FG::get_field(FT::BigEmpty), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(branchs_and_borders, FG::get_field(FT::Medium), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
+	call_search(branchs_and_borders, FG::get_field(FT::Hard), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
 }

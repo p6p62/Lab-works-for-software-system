@@ -143,6 +143,7 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldDrawer.cpp" />
     <ClCompile Include="FieldEvaluator.cpp" />
+    <ClCompile Include="FieldGenerator.cpp" />
     <ClCompile Include="FieldStateTreeNode.cpp" />
     <ClCompile Include="SolutionAlgorithms.cpp" />
   </ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldDrawer.h" />
     <ClInclude Include="FieldEvaluator.h" />
+    <ClInclude Include="FieldGenerator.h" />
     <ClInclude Include="FieldStateTreeNode.h" />
     <ClInclude Include="SolutionAlgorithms.h" />
   </ItemGroup>

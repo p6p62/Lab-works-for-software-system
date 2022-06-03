@@ -76,3 +76,11 @@ double FieldEvaluator::get_evaluate(const Field& field)
 	return manhattan_smart(field);
 #endif // MANHATTAN_WITH_CLEAR_WAY
 }
+
+double FieldEvaluator::get_move_cost(const Field& old_field, const Field& new_field)
+{
+	return  abs((int)(new_field.get_player_position().row - new_field.get_endgame_position().row)+ 
+		(int)(new_field.get_player_position().col - new_field.get_endgame_position().col)) - 
+			abs((int)(old_field.get_player_position().row - old_field.get_endgame_position().row)+
+				(int)(old_field.get_player_position().col - old_field.get_endgame_position().col));
+}

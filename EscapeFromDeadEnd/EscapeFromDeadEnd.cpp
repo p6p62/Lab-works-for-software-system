@@ -139,10 +139,17 @@ int main()
 		return SolutionAlgorithms::get_answer_by_gradient_descent(FieldEvaluator::get_evaluate, f, DEPTH_LIMIT, out, perf_m);
 	};
 
+	auto branchs_and_borders = [](const Field& f, std::vector<Field>& out, WorkResult* perf_m) -> bool
+	{
+		return SolutionAlgorithms::get_answer_by_branchs_and_borders(FieldEvaluator::get_move_cost, f, out, perf_m);
+	};
+
 	//call_search(depth_search, get_medium_field(), "---ПОИСК В ГЛУБИНУ---", true);
-	call_search(width_search, get_medium_field(), "---ПОИСК В ШИРИНУ---", true);
+	//call_search(width_search, get_hard_field(), "---ПОИСК В ШИРИНУ---", true);
 	//call_search(gradient_search, get_easy_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 	//call_search(gradient_search, get_medium_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	//call_search(gradient_search, get_hard_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	call_search(gradient_search, get_hard_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 	//call_search(gradient_search, get_big_empty_field(), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	//call_search(branchs_and_borders, get_medium_field(), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
+	call_search(branchs_and_borders, get_hard_field(), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
 }

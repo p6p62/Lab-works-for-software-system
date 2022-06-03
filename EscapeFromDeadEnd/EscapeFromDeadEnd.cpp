@@ -106,6 +106,11 @@ int main()
 		return SolutionAlgorithms::get_answer_by_branchs_and_borders(FieldEvaluator::get_move_cost, f, out, perf_m);
 	};
 
+	auto equal_costs_strategy = [](const Field& f, std::vector<Field>& out, WorkResult* perf_m) -> bool
+	{
+		return SolutionAlgorithms::get_answer_by_equal_costs_strategy(FieldEvaluator::get_move_cost, f, out, perf_m);
+	};
+
 	//call_search(depth_search, FG::get_field(FT::Medium), "---ПОИСК В ГЛУБИНУ---", true);
 	//call_search(width_search, FG::get_field(FT::Hard), "---ПОИСК В ШИРИНУ---", true);
 	//call_search(gradient_search, FG::get_field(FT::Easy), "---ГРАДИЕНТНЫЙ СПУСК---", true);
@@ -114,4 +119,5 @@ int main()
 	//call_search(gradient_search, FG::get_field(FT::BigEmpty), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 	//call_search(branchs_and_borders, FG::get_field(FT::Medium), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
 	call_search(branchs_and_borders, FG::get_field(FT::Hard), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
+	call_search(equal_costs_strategy, FG::get_field(FT::Hard), "---СТРАТЕГИЯ РАВНЫХ ЦЕН---", true);
 }

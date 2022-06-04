@@ -24,6 +24,9 @@ std::string convert_perf_metrics_to_string(WorkResult& metrics)
 {
 	std::string str = "\tПоказатели алгоритма\n";
 	str += "Время работы: " + std::to_string(metrics.seconds) + " с.";
+	str += "\nМаксимальная глубина поиска: " + std::to_string(metrics.max_depth);
+	str += "\nЧисло сгенерированных состояний: " + std::to_string(metrics.all_nodes_count);
+	str += "\nДлина решения: " + std::to_string(metrics.answer_length);
 	return str;
 }
 
@@ -73,7 +76,7 @@ void call_search
 	cout << endl << algorithm_name << endl;
 	if (need_performance_measures)
 		cout << convert_perf_metrics_to_string(perf_stats) << endl << endl;
-	draw_answer_states(escape_way);
+	//draw_answer_states(escape_way);
 }
 
 int main()
@@ -115,7 +118,7 @@ int main()
 	//call_search(width_search, FG::get_field(FT::Hard), "---ПОИСК В ШИРИНУ---", true);
 	//call_search(gradient_search, FG::get_field(FT::Easy), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 	//call_search(gradient_search, FG::get_field(FT::Medium), "---ГРАДИЕНТНЫЙ СПУСК---", true);
-	//call_search(gradient_search, FG::get_field(FT::Hard), "---ГРАДИЕНТНЫЙ СПУСК---", true);
+	call_search(gradient_search, FG::get_field(FT::Hard), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 	//call_search(gradient_search, FG::get_field(FT::BigEmpty), "---ГРАДИЕНТНЫЙ СПУСК---", true);
 	//call_search(branchs_and_borders, FG::get_field(FT::Medium), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);
 	call_search(branchs_and_borders, FG::get_field(FT::Hard), "---СТРАТЕГИЯ ВЕТВЕЙ И ГРАНИЦ---", true);

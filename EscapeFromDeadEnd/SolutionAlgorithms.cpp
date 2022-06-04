@@ -1,8 +1,14 @@
 #include "SolutionAlgorithms.h"
 
-bool recursive_depth_search(int current_depth, const int depth_limit, FieldStateTreeNode current_state, std::vector<Field>& result, const std::function<double(const Field&)>& evaluating_function = nullptr)
+bool recursive_depth_search(int current_depth, const int depth_limit, FieldStateTreeNode current_state, std::vector<Field>& result, SolutionAlgorithms::WorkResult* const perf_results = nullptr, const std::function<double(const Field&)>& evaluating_function = nullptr)
 {
 	current_depth++;
+	if (perf_results != nullptr)
+	{
+		perf_results->all_nodes_count++;
+		if (current_depth > perf_results->max_depth)
+			perf_results->max_depth++;
+	}
 	result.push_back(current_state.get_current_field());
 	if (current_state.get_current_field().is_endgame_state())
 		return true;
@@ -19,7 +25,7 @@ bool recursive_depth_search(int current_depth, const int depth_limit, FieldState
 
 			current_state.get_next_field_state_by_index(i, next_state);
 
-			bool search_result = recursive_depth_search(current_depth, depth_limit, next_state, result, evaluating_function);
+			bool search_result = recursive_depth_search(current_depth, depth_limit, next_state, result, perf_results, evaluating_function);
 			if (search_result)
 			{
 				return true;
@@ -40,12 +46,13 @@ bool SolutionAlgorithms::get_answer_by_depth_search(const Field& start_field, co
 		start_clocks = clock();
 	}
 
-	bool search_result = recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result);
+	bool search_result = recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result, out_performance);
 
 	// заполнение данных о производительности
 	if (is_need_performance_measure)
 	{
 		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
+		out_performance->answer_length = result.size();
 	}
 
 	return search_result;
@@ -109,6 +116,9 @@ bool SolutionAlgorithms::get_answer_by_width_search(const Field& start_field, st
 	if (is_need_performance_measure)
 	{
 		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
+		out_performance->all_nodes_count = generated_states.size();
+		out_performance->answer_length = result.size();
+		out_performance->max_depth = result.size();
 	}
 
 	return search_result;
@@ -124,12 +134,13 @@ bool SolutionAlgorithms::get_answer_by_gradient_descent(const std::function<doub
 		start_clocks = clock();
 	}
 
-	bool search_result = recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result, evaluating_function);
+	bool search_result = recursive_depth_search(0, depth_limit + 1, FieldStateTreeNode(start_field), result, out_performance, evaluating_function);
 
 	// заполнение данных о производительности
 	if (is_need_performance_measure)
 	{
 		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
+		out_performance->answer_length = result.size();
 	}
 
 	return search_result;
@@ -145,6 +156,16 @@ bool SolutionAlgorithms::get_answer_by_branchs_and_borders(const std::function<d
 
 	// для замеров производительности
 	bool is_need_performance_measure = out_performance != nullptr;
+	auto calc_depth = [](FieldStateTreeNode* node) -> size_t
+	{
+		size_t counter = 0;
+		while (node != nullptr)
+		{
+			counter++;
+			node = node->get_previous_state();
+		}
+		return counter;
+	};
 	clock_t start_clocks;
 	if (is_need_performance_measure)
 	{
@@ -159,6 +180,14 @@ bool SolutionAlgorithms::get_answer_by_branchs_and_borders(const std::function<d
 	while (current_checked_index < generated_states.size()
 		&& !generated_states.at(current_checked_index)->state.get_current_field().is_endgame_state())
 	{
+		// обновление максимальной глубины
+		if (is_need_performance_measure)
+		{
+			size_t current_depth = calc_depth(&generated_states.at(current_checked_index)->state);
+			if (current_depth > out_performance->max_depth)
+				out_performance->max_depth = current_depth;
+		}
+
 		for (size_t i = 0; i < generated_states.at(current_checked_index)->state.get_next_states_count(); i++)
 		{
 			// создаю новое состояние с начальной стоимостью, равной стоимости родителя, сразу добавляю его последним
@@ -221,6 +250,9 @@ bool SolutionAlgorithms::get_answer_by_branchs_and_borders(const std::function<d
 	if (is_need_performance_measure)
 	{
 		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
+		out_performance->answer_length = result.size();
+		out_performance->all_nodes_count = generated_states.size();
+		out_performance->max_depth++; // для учёта выигрышного состояния, после которого прервали поиск
 	}
 
 	return search_result;
@@ -236,6 +268,16 @@ bool SolutionAlgorithms::get_answer_by_equal_costs_strategy(const std::function<
 
 	// для замеров производительности
 	bool is_need_performance_measure = out_performance != nullptr;
+	auto calc_depth = [](FieldStateTreeNode* node) -> size_t
+	{
+		size_t counter = 0;
+		while (node != nullptr)
+		{
+			counter++;
+			node = node->get_previous_state();
+		}
+		return counter;
+	};
 	clock_t start_clocks;
 	if (is_need_performance_measure)
 	{
@@ -250,6 +292,14 @@ bool SolutionAlgorithms::get_answer_by_equal_costs_strategy(const std::function<
 	while (current_checked_index < generated_states.size()
 		&& !generated_states.at(current_checked_index)->state.get_current_field().is_endgame_state())
 	{
+		// обновление максимальной глубины
+		if (is_need_performance_measure)
+		{
+			size_t current_depth = calc_depth(&generated_states.at(current_checked_index)->state);
+			if (current_depth > out_performance->max_depth)
+				out_performance->max_depth = current_depth;
+		}
+
 		for (size_t i = 0; i < generated_states.at(current_checked_index)->state.get_next_states_count(); i++)
 		{
 			// создаю новое состояние с начальной стоимостью, равной стоимости родителя, сразу добавляю его последним
@@ -322,6 +372,9 @@ bool SolutionAlgorithms::get_answer_by_equal_costs_strategy(const std::function<
 	if (is_need_performance_measure)
 	{
 		out_performance->seconds = (clock() - start_clocks) / (double)CLOCKS_PER_SEC;
+		out_performance->answer_length = result.size();
+		out_performance->all_nodes_count = generated_states.size();
+		out_performance->max_depth++; // для учёта выигрышного состояния, после которого прервали поиск
 	}
 
 	return search_result;

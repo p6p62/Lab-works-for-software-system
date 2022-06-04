@@ -10,6 +10,9 @@ public:
 	struct WorkResult
 	{
 		double seconds = 0;
+		size_t max_depth = 0;
+		size_t answer_length = 0;
+		size_t all_nodes_count = 0;
 	};
 
 public:
